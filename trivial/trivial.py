@@ -11,6 +11,15 @@ def set_statement(v, e):
     assert type(v[1]) is str
     e[v[1]] = evaluate(v[2], e)
     return None
+def if_statement(v, e):
+    assert len(v) == 4
+    assert v[0] == "if"
+    assert type(v[1]) is list
+
+    if(evaluate(v[1], e)):
+        return evaluate(v[2],e)
+    else:
+        return evaluate(v[3],e)
 
 def evaluate(v, env):
     if type(v) is list:
@@ -19,8 +28,9 @@ def evaluate(v, env):
         assert type(v[0]) is str
         if v[0] == "set":
             return set_statement(v, env)
-        #if v[0] == "set":
-        #    return set_statement(v, e)
+        if v[0] == "if":
+            return if_statement(v, env)
+
         f = resolve(v[0], env)
         assert callable(f)
         values = [evaluate(value, env) for value in v[1:]]
@@ -36,7 +46,8 @@ env = {
     '-': lambda v, e: v[0] - v[1],
     '*': lambda v, e: v[0] * v[1],
     '/': lambda v, e: v[0] / v[1],
-    'print': lambda v, e: print(v)
+    'print': lambda v, e: print(v),
+    '<': lambda v, e: v[0] < v[1]
 }
 
 def test_evaluate():
@@ -56,6 +67,8 @@ def test_evaluate():
     assert evaluate(['set', 'q', ['+', 5, 6]], env) == None
     assert env['q'] == 11
     evaluate(['print', 2, 3, 4], env)
+
+    assert evaluate(['if',['<',5,10],['+',2,1],['+',2,2]], env) == 3
 
 
 def test_resolve():
