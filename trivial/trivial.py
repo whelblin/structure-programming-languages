@@ -21,6 +21,23 @@ def if_statement(v, e):
     else:
         return evaluate(v[3],e)
 
+def while_statement(v, e):
+    assert len(v) == 3
+    assert v[0] == "while"
+    assert type(v[1]) is list
+
+    while(evaluate(v[1], e)):
+        evaluate(v[2],e)
+    return None
+
+def begin_statement(v, e):
+    assert len(v) == 3
+    assert v[0] == "begin"
+    for item in v[1:]:
+        result = evaluate(item, e)
+    return result
+
+
 def evaluate(v, env):
     if type(v) is list:
         if len(v) == 0:
@@ -30,7 +47,10 @@ def evaluate(v, env):
             return set_statement(v, env)
         if v[0] == "if":
             return if_statement(v, env)
-
+        if v[0] == "while":
+            return while_statement(v, env)
+        if v[0] == "begin":
+            return begin_statement(v, env)
         f = resolve(v[0], env)
         assert callable(f)
         values = [evaluate(value, env) for value in v[1:]]
@@ -47,7 +67,8 @@ env = {
     '*': lambda v, e: v[0] * v[1],
     '/': lambda v, e: v[0] / v[1],
     'print': lambda v, e: print(v),
-    '<': lambda v, e: v[0] < v[1]
+    '<': lambda v, e: v[0] < v[1],
+    '?': lambda v ,e: print(e),
 }
 
 def test_evaluate():
@@ -69,6 +90,15 @@ def test_evaluate():
     evaluate(['print', 2, 3, 4], env)
 
     assert evaluate(['if',['<',5,10],['+',2,1],['+',2,2]], env) == 3
+    evaluate(['set','i',1], env)
+    assert evaluate(['while',['<','i',10],['set','i',['+','i',1]]], env) == None
+    assert evaluate('i', env) == 10
+
+    evaluate(['?'],env)
+
+    assert evaluate(['begin',['+',2,1],['+',2,2]], env) == 4
+
+    assert evaluate(['if',['<',5,10],['begin',['+',2,1],['+',2,2]],['+',2,2]], env) == 4
 
 
 def test_resolve():
