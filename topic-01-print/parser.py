@@ -100,6 +100,7 @@ def test_parse():
 if __name__ == "__main__":
     test_parse
     print(parse(['print', ['NUMBER', 3], '+', ['NUMBER', 4], '*', '(', ['NUMBER', 5], '-', ['NUMBER', 2], ')', ';']))
+    print(parse(['print',['NUMBER', 3], '+', '(', '-', ['NUMBER', 4],'*', ['NUMBER', 3], ')', '+', '-', '(',['NUMBER', 4], '*', ['NUMBER', 5], ')',';']))
 
 
 

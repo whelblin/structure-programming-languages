@@ -99,3 +99,4 @@ if __name__ == "__main__":
     test_multiple_tokens()
     test_keywords()
     print(tokenize("print 3+4*(5-2);"))
+    print(tokenize("print 3 + (-4 * 3) + -(4 * 5)"))
