@@ -1,3 +1,4 @@
+# binary operation dictionary
 binary_operations = {
     "+": lambda x, y: x + y,
     "-": lambda x, y: x - y,
